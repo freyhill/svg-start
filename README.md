@@ -67,3 +67,16 @@ svg里的图形是后来居上，所以上面的四个圆形按顺序，第一�
  y2| 终点y坐标
  stroke|线条颜色（这是个共有属性，每个形状都有，描述了图形外轮廓的颜色）
  stroke-width| 线条的宽度 同stroke 是所有图形的共有属性
+
+  ## 曲线（polyline）
+  曲线是是一条多个点组和成的非闭合的曲线或折线
+  ```
+  <svg width="200" height="200" style="background: #333;">
+    <polyline points="20,10 0,200 80,80" stroke="red" fill="none" />
+  </svg>
+  ```
+  
+ 属性 | 描述
+---|---
+ points | 点的集合 即是x,y坐标的集合 [x,y x1,y1, x2,y2,....]
+ fill |连线区域的填充色，默认为黑色，如果只希望现实线段则设置为none
