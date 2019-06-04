@@ -49,3 +49,21 @@ svg里的图形是后来居上，所以上面的四个圆形按顺序，第一�
  cy| 圆心y坐标（相对于svg y轴的距离）
  rx| x轴半径
  ry| y轴半径
+
+ ## 直线（line）
+
+ ```
+<svg width="200" height="200" style="background: #333;">
+    <line x1="10" y1="10" x2="190"  y2="190" stroke="#fff" stroke-width="4"/>
+</svg>
+ ```
+ line描述了一条直线，即从一点到另一点的线条
+
+ 属性 | 描述
+---|---
+ x1 | 起始点x坐标 
+ y1| 起始点y坐标
+ x2| 终点x坐标
+ y2| 终点y坐标
+ stroke|线条颜色（这是个共有属性，每个形状都有，描述了图形外轮廓的颜色）
+ stroke-width| 线条的宽度 同stroke 是所有图形的共有属性
