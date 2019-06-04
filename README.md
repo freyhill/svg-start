@@ -16,5 +16,19 @@
  rx|圆角的x方向半径
  ry|圆角的y方向的半径
 
-
+## 圆形（circle）
+```
+<svg width="200" height="200" style="background: #333;">
+    <circle cx="100" cy="100" r="80" fill="#000"></circle>
+    <circle cx="100" cy="100" r="50" fill="red"></circle>
+    <circle cx="100" cy="100" r="30" fill="skyblue"></circle>
+    <circle cx="100" cy="100" r="10" fill="#fff"></circle>
+</svg>
+```
+svg里的图形是后来居上，所以上面的四个圆形按顺序，第一个在最下层显示，最后面的在最上层显示
+属性 | 用法
+---|---
+ cx | 圆心x坐标（相对于svg x轴的距离） 
+ cy| 圆心y坐标（相对于svg y轴的距离）
+ r|圆的半径
 
