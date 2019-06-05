@@ -1,0 +1,43 @@
+<h2>直线命令</h2>
+<div>
+    <p>M代表画笔移动到某一坐标点 大写代表绝对路径，小写代表相对路径</p>
+    <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <path d="M10 10"/>
+        <!-- Points -->
+        <circle cx="10" cy="10" r="2" fill="red"/>
+    </svg>
+</div>
+<div>
+    <p>H 绘制水平直线 只需一个值即x的位置 V 绘制垂直直线 只需一个值即y的坐标 L绘制直线，需要x，y坐标两个值</p>
+    <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <path d="M10 10 H 90 V 90 H 10 L 10 10" stroke="red" fill="none"/>
+        <circle cx="10" cy="10" r="2" fill="red"/>
+        <circle cx="90" cy="90" r="2" fill="red"/>
+        <circle cx="90" cy="10" r="2" fill="red"/>
+        <circle cx="10" cy="90" r="2" fill="red"/>
+    </svg>
+</div>
+
+<div>
+    <p>Z闭合路径命令 Z命令会从当前点画一条直线到路径的起点 z不区分大小写</p>    
+    <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <path d="M10 10 H 90 V 90 H 10 Z" stroke="red" fill="none"/>
+        <!-- Points -->
+        <circle cx="10" cy="10" r="2" fill="red"/>
+        <circle cx="90" cy="90" r="2" fill="red"/>
+        <circle cx="90" cy="10" r="2" fill="red"/>
+        <circle cx="10" cy="90" r="2" fill="red"/>
+    </svg>
+</div>
+
+<div>
+    <p>使用相对路径绘制</p>    
+    <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <path d="M10 10 h 100 v 100 h -100 Z" stroke="red" fill="none"/>
+    </svg>
+</div>
+<h2>曲线命令</h2>
+<p>C x1 y1, x2 y2, x y  当前点（10 100）与x1 y1的斜率 x y与 x2 y2的斜率</p>
+<svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+    <path d="M0 100 C 20 0, 100 0, 200 100" stroke="red" fill="transparent"/>
+</svg>
