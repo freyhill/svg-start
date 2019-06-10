@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .line {
+            margin: 50px;
+            width: 300px;
+            height: 3px;
+            background: #999;
+            position: relative;
+        }
+        .line2{
+            margin: 50px;
+            width: 3px;
+            height: 300px;
+            background: #999;
+            position: relative;
+        }
+        
+        .point {
+            position: absolute;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            top: -9px;
+        }
+        .pointv{
+            left:-8px;
+        }
+        svg {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="line" id="line">
+        <div class='point' id='point' data-direction='h'>
+            <svg width="20px" height="20px">
+                <circle cx="10" cy="10" r="10" fill="#0FD4B4"></circle>
+            </svg>
+        </div>
+    </div>
+    <div class="line line2" id="line2">
+        <div class='point pointv' id='point2' data-direction='v'>
+            <svg width="20px" height="20px">
+                <circle cx="10" cy="10" r="10" fill="#0FD4B4"></circle>
+            </svg>
+        </div>
+    </div>
+    <div class="line" id="line3">
+            <div class='point pointv' id='point3' data-direction='h'>
+                <svg width="20px" height="20px">
+                    <circle cx="10" cy="10" r="10" fill="#0FD4B4"></circle>
+                </svg>
+            </div>
+        </div>
+    <script>
+        class pointMove {
+            constructor(pointInfo) {
+                this.line = document.getElementById(pointInfo.line);
+                this.point = document.getElementById(pointInfo.point);
+                this.direction = pointInfo.direction;
+                this.pointMove = 0;
+                this.active = false;
+                this.mouseMove = this.mouseMove.bind(this);
+                document.addEventListener('mousedown', this.mouseDown.bind(this, pointInfo.point), false);
+            }
+            // 鼠标按下
+            mouseDown(point, e) {
+                // 判断当前操作元素
+                this.active = e.path.some((item) => {
+                     return item.id && item.id === point;
+                   
+                })
+                if (!this.active) {
+                    return;
+                }
+                var e = e || window.event;
+                console.log(e, window.event);
+                if (this.direction === 'h') {
+                    this.pointPos = e.clientX - this.point.offsetLeft;
+                } else {
+                    this.pointPos = e.clientY - this.point.offsetTop;
+                }
+                document.addEventListener('mousemove', this.mouseMove, false);
+                document.addEventListener('mouseup', ()=>{
+                    document.removeEventListener('mousemove', this.mouseMove, false);
+                });
+            }
+            // 鼠标移动
+            mouseMove(e) {
+                var e = e || window.event;
+                if (this.direction === 'h') {
+                    this.pointMove = e.clientX - this.pointPos;
+                    if (this.pointMove < 0) {
+                        this.pointMove = 0;
+                    } else if (this.pointMove > (this.line.offsetWidth- this.point.offsetWidth)) {
+                        this.pointMove = this.line.offsetWidth - this.point.offsetWidth;
+                    }
+                    this.point.style.left = this.pointMove + "px";
+                } else {
+                    this.pointMove = e.clientY - this.pointPos;
+                    if (this.pointMove < 0) {
+                        this.pointMove = 0;
+                    } else if (this.pointMove > (this.line.offsetHeight - this.point.offsetHeight)){
+                        this.pointMove = this.line.offsetHeight - this.point.offsetHeight;
+                    }
+                    this.point.style.top = this.pointMove + "px";
+                }
+                
+            }
+        }
+
+        // 创建滑块儿实例
+        let point = document.getElementsByClassName('point');
+        for (var i = 0;i <point.length; i++) {
+            let line = point[i].parentElement;
+            new pointMove({
+                line:line.id,
+                point: point[i].id,
+                direction: point[i].dataset.direction
+            })
+        }
+    </script>
+</body>
+
+</html>
