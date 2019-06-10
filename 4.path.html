@@ -37,7 +37,8 @@
     </svg>
 </div>
 <h2>曲线命令</h2>
-<p>C x1 y1, x2 y2, x y  当前点（10 100）与x1 y1的斜率 x y与 x2 y2的斜率</p>
+<p>path元素里，只存在两种贝塞尔曲线：三次贝塞尔曲线C，和二次贝塞尔曲线Q</p>
+<p>三次贝塞尔曲线需要定义一个点和两个控制点，所以用C命令创建三次贝塞尔曲线，需要设置三组坐标参数，C x1 y1, x2 y2, x y  当前点（10 100）与x1 y1的斜率 x y与 x2 y2的斜率</p>
 <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
     <path d="M0 100 C 20 0, 100 0, 200 100" stroke="red" fill="transparent"/>
 </svg>
