@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图形编辑</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #wrapper{
+            margin:80px;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper" style="width: 90px;height: 90px;">
+        <svg id='svg' width="90" height="90" style="background: #eee">
+                <rect id='rect' x="5" y="5" width="80" height="80" rx="20" stroke="#1380BF" stroke-width="2" stroke-dasharray="none" fill="#1AABFF"></rect>
+                <circle cx="25" cy="5" r="2" fill="red" id='point'></circle>
+        </svg>
+    </div>
+    
+    <script>
+         class TransShape  {
+            constructor(shapeData) {
+                this.point = document.getElementById('point');
+                this.wrapper = document.getElementById('wrapper');
+                this.shape = shapeData;
+                this.mouseMove = this.mouseMove.bind(this);
+                document.addEventListener('mousedown', this.mouseDown.bind(this), false);
+            }
+            // 鼠标按下
+            mouseDown(e) {
+                var e = e || window.event;
+                document.addEventListener('mousemove', this.mouseMove, false);
+                document.addEventListener('mouseup', ()=>{
+                    document.removeEventListener('mousemove', this.mouseMove, false);
+                });
+            }
+            // 鼠标移动
+            mouseMove(e) {
+                var e = e || window.event;
+                this.pointPos = e.clientX - this.wrapper.offsetLeft;
+                if (this.pointPos <= this.shape.x ) {
+                    this.shape.rx = 0;
+                    this.pointPos = this.shape.x;
+                } else if  (this.pointPos > this.shape.width/2 +this.shape.x  ) {
+                    this.pointPos = this.shape.width / 2 +this.shape.x;
+                    this.shape.rx = this.shape.width;
+                } else {
+                    this.shape.rx = this.pointPos-this.shape.x;
+                }
+                this.point.setAttribute('cx',this.pointPos) ;
+                document.getElementById('rect').setAttribute('rx',this.shape.rx)
+            }
+        }
+        new TransShape({
+                x:5,
+                y:5,
+                width:80,
+                height:80,
+                rx:20,
+                type:'rect'
+        })
+    </script>
+</body>
+</html>
