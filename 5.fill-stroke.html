@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>填充与边框</title>
+    <style>
+        #myPath{
+            stroke:blue;
+            stroke-linecap:round;
+            fill:red;
+            stroke-width:5;
+        }
+    </style>
 </head>
 <body>
     <h2>fill</h2>
@@ -17,17 +25,38 @@
         fill-opacity="0.5" stroke-opacity="0.8"/></rect>
     </svg>
     <h2>stroke</h2>
-    <p>描边的展现方式</p>
+    <p>描边的展现方式 stroke-linecap, 有三個值</p>
+    <ul>
+        <li>butt 用直边结束线段，它是常规做法，线段边界90度垂直于描边的方向、贯穿它的终点(線有多長，描邊有多長)</li>
+        <li>square 微超出实际路径的范围 超出的大小由stroke-width控制 路徑兩邊都多出stroke-width的寬度</li>
+        <li>round 表示边框的终点是圆角，圆角的半径也是由stroke-width控制的</li>
+    </ul>
     <svg>
         <line x1='40' y1='20' x2='90' y2='20' stroke="skyblue" stroke-width="10" stroke-linecap="butt"></line>
         <line x1='40' y1='40' x2='90' y2='40' stroke="skyblue" stroke-width="10" stroke-linecap="square"></line>
         <line x1='40' y1='60' x2='90' y2='60' stroke="skyblue" stroke-width="10" stroke-linecap="round"></line>
     </svg>
-    <p>线段的连接方式</p>
+    <p>线段的连接方式stroke-linejoin,也有三個值</p>
+    <ul>
+        <li>miter: 默认值,表示用方形画笔在连接处形成尖角</li>
+        <li>round: 用圓角連接實現平滑效果</li>
+        <li>bevel：連接處會形成一個斜切</li>
+    </ul>
     <svg  width='300' height="280" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <polyline points="40 60 80 20 120 60"  fill="none" stroke="black" stroke-width="20" stroke-linecap="butt" stroke-linejoin="miter"></polyline>
         <polyline points="40 140 80 100 120 140"  fill="none" stroke="black" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></polyline>
         <polyline points="40 220 80 180 120 220"  fill="none" stroke="black" stroke-width="20" stroke-linecap="square" stroke-linejoin="bevel"></polyline>
-    </svg>    
+    </svg>   
+    <h2>虛線stroke-dasharray</h2> 
+    <svg width="200" height="150" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <path d="M 10 75 Q 50 10 100 75 T 190 75" stroke="black"
+          stroke-linecap="round" stroke-dasharray="1,2,3,4,5,6" fill="none"/>
+        <path d="M 10 75 L 190 75" stroke="red"
+          stroke-linecap="round" stroke-width="1" stroke-dasharray="5,5" fill="none"/>
+      </svg>
+    <h2>使用css</h2>
+    <svg width="200" height="150" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <path id='myPath' d="M 20 100 Q 75 0 100 100 T 180 75" />
+    </svg>
 </body>
 </html>
