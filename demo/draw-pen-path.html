@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图形编辑</title>
+    <style>
+       *{margin:0;padding:0;}
+    </style>
+</head>
+<body>
+    <svg id='svg' width="800" height="800" style="background: #eee" >
+    </svg>
+    <script>
+
+        class Path{
+            constructor (svg) {
+                this.svg = document.getElementById(svg);
+                this.path = [];
+                this.mouseMove = this.mouseMove.bind(this);
+                this.svg.addEventListener('mousedown', this.mouseDown.bind(this), true);
+            }
+            mouseDown (e) {
+                let mouse = this.getMouseCoordinate(e);
+                if (this.path.length === 0){
+                    let M = 'M' + mouse.x + ' ' + mouse.y;
+                    let L = 'L' + mouse.x + ' ' + (mouse.y + 0.000001);
+                    this.path.push(M);
+                    this.path.push(L);
+                    let spath = this.createpath(this.path.toString());
+                    document.getElementById('svg').appendChild(spath);
+                }
+
+                document.addEventListener('mousemove', this.mouseMove, true);
+                document.addEventListener('mouseup', (e) => {
+                    let mouse = this.getMouseCoordinate(e);
+                    let L = 'L' + mouse.x + ' ' + (mouse.y + 0.000001);
+                    this.path.push(L);
+                   
+                }, true);
+                document.addEventListener('dblclick', () => {
+                    document.removeEventListener('mousemove', this.mouseMove, true)
+                })
+            }
+            createpath (d) {
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('stroke', 'red');
+                path.setAttribute('id', 'myd');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('d', d);
+                return path;
+            }
+            // 移动鼠标获取鼠标的坐标及角度
+            mouseMove(e) {
+                let mouse = this.getMouseCoordinate(e);
+                this.path[this.path.length - 1] = 'L' + mouse.x + ' ' +mouse.y;
+                let spath = this.path.toString();
+                document.getElementById('myd').setAttribute('d', spath);
+            }
+            getMouseCoordinate (e) {
+                let x = e.pageX || e.clientX +  document.documentElement.scrollLeft;
+                let y = e.pageY || e.clientY +  document.documentElement.scrollLeft;
+                return {x,y}
+            }
+           
+         }
+        new Path('svg');
+    </script>
+</body>
+</html>

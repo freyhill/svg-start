@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图形编辑</title>
+    <style>
+       
+        #svg{
+           margin:30px;
+          
+        }
+        #svg2{
+            display:none;
+            background:#eee;
+            margin:80px;
+        }
+    </style>
+</head>
+<body>
+    <svg id='svg' width="32.000001430511475" height="32.000001430511475" style="background: #eee" >
+        <path id='path' d='M16.6,15.4 L30.2,15.4 L30.2,16 C30.2,23.8424434 23.8424434,30.2 16,30.2 C8.15755655,30.2 1.8,23.8424434 1.8,16 C1.8,8.15755655 8.15755655,1.8 16,1.8 L16.6,1.8 L16.6,15.4 Z' fill='red'/>
+        <circle cx='16.6' cy='15.4' r='0.4' />
+        <circle id='circle1' cx='30.2' cy='15.4' r='0.4' fill='#345322' />
+        <!--第一个贝塞尔曲线-->
+        <!--起始点-->
+        <circle id='point1' cx='30.2' cy='16' r='0.8'  fill='#34e322' />
+        <!--第一个控制点-->
+        <circle cx='30.2' cy='23.8424434' r='0.4' fill='#000' />
+        <line id='line1' x1='30.2' y1='16' x2='30.2' y2='23.8424434' stroke='blue' stroke-width='0.2' />
+        <!--第二个控制点-->
+        <circle cx='23.8424434' cy='30.2' r='0.4' fill='#34e3f2' />
+        <!--终点-->
+        <circle cx='16' cy='30.2' r='0.4' />
+        <line x1='16' y1='30.2' x2='23.8424434' y2='30.2' stroke='blue' stroke-width='0.2' />
+
+        <!--第二个贝塞尔曲线-->
+        <!--起始点-->
+        <circle cx='16' cy='30.2' r='0.6'  fill='#84e322' />
+        <!--第一个控制点-->
+        <circle cx='8.15755655' cy='30.2' r='0.4' fill='#000' />
+        <line x1='16' y1='30.2' x2='8.15755655' y2='30.2' stroke='#89e234' stroke-width='0.2' />
+        <!--第二个控制点--> 
+        <circle cx='1.8' cy='23.8424434' r='0.4' fill='#34e3f2' />
+        <!--终点-->
+        <circle cx='1.8' cy='16' r='0.4' />
+        <line x1='1.8' y1='16' x2='1.8' y2='23.8424434' stroke='#89e234' stroke-width='0.2' />
+
+        <!--第三个贝塞尔曲线--> 1.8,8.15755655 8.15755655,1.8 16,1.8
+        <!--起始点-->
+        <circle cx='1.8' cy='16' r='0.6'  fill='#84e322' />
+        <!--第一个控制点-->
+        <circle cx='1.8' cy='8.15755655' r='0.4' fill='#000' />
+        <line x1='1.8' y1='16' x2='1.8' y2='8.15755655' stroke='#113d67' stroke-width='0.2' />
+        <!--第二个控制点--> 
+        <circle cx='8.15755655' cy='1.8' r='0.4' fill='#34e3f2' />
+        <!--终点-->
+        <circle cx='16' cy='1.8' r='0.4' />
+        <line x1='8.15755655' y1='1.8' x2='16' y2='1.8' stroke='#113d67' stroke-width='0.2' />
+    </svg>
+    <svg id='svg2' width="200" height="200">
+        <circle cx='100' cy='100' r='100' fill='red' />
+        <circle cx='100' cy='100' r='2' fill='#000' />
+        <circle id='point' cx='100' cy='0' r='18' fill='blue' />
+    </svg>
+    <script>
+
+        class Circle{
+            constructor (shape) {
+                this.svg = document.getElementById(shape.svg);
+                this.shape = document.getElementById(shape.shape);
+                this.path = shape.path;
+                this.r = shape.r;
+                this.point = document.getElementById(shape.point);
+                
+                this.mouseMove = this.mouseMove.bind(this);
+                this.point.addEventListener('mousedown', this.mouseDown.bind(this), true);
+            }
+            // 按下鼠标记录圆心的位置
+            mouseDown (e) {
+                this.getShapInfo();
+                
+                let point = this.point.getBBox();
+                this.pointX = point.x;
+                this.pointY = point.y;
+                document.addEventListener('mousemove', this.mouseMove, true);
+                document.addEventListener('mouseup', ()=>{
+                    document.removeEventListener('mousemove', this.mouseMove, true)
+                }, true);
+            }
+            // 移动鼠标获取鼠标的坐标及角度
+            mouseMove(e) {
+                let mouse = this.getMouseCoordinate(e);
+                let theta =  this.getAngle(mouse.x - this.centerX, mouse.y - this.centerY);
+                console.log('theta', theta);
+                this.circleMoveCoordinate(theta);
+            }
+            // 根据角度，半径，坐标计算出 对应在圆上的坐标
+            circleMoveCoordinate (theta) {
+                let  x1   =   this.centerX   +   this.r   *  Math.cos(theta   *   3.14   /180   ) 
+                let  y1   =   this.centerY   +   this.r   *  Math.sin(theta   *   3.14   /180   ) ;
+                x1 = x1-this.offSetX;
+                y1 = y1-this.offSetY;
+                this.point.setAttribute('cx', x1);
+                this.point.setAttribute('cy', y1);
+                this.transPath(x1, y1);
+            }
+            // 路径转换
+            transPath (x, y) {
+                let arrPath = this.pathToArr(this.path);
+                
+                arrPath[1][1] = x;
+                arrPath[1][2] = y;
+                arrPath[2][1] = x;
+                arrPath[2][2] = y;
+                // 计算贝塞尔曲线控制点坐标的思路，
+                // 1.贝塞尔曲线控制点的坐标到起始点的长度永远不变
+                // 2.贝塞尔曲线控制点到圆心跟圆心到起始点的夹角度数永远不变
+                // 起始就是一个直角三角形在圆上画圆
+                let jiaodu = this.getAngle(arrPath[3][1] + 1.7999999523162842 + this.offSetX - this.centerX, arrPath[3][2] + 1.7999999523162842 + this.offSetY - this.centerY);
+                
+                let path = this.arrToPath(arrPath);
+                document.getElementById('circle1').setAttribute('cx', x);
+                document.getElementById('circle1').setAttribute('cy', y);
+                document.getElementById('line1').setAttribute('x1', x);
+                document.getElementById('line1').setAttribute('y1', y);
+                this.shape.setAttribute('d', path)
+            }
+            // 返回鼠标的坐标
+            getMouseCoordinate (e) {
+                let x = e.pageX || e.clientX +  document.documentElement.scrollLeft;
+                let y = e.pageY || e.clientY +  document.documentElement.scrollLeft;
+                return {x,y}
+            }
+            // 获取图形的基本信息
+            getShapInfo () {
+                const svgInfo  = this.svg.getBoundingClientRect();
+                const shapeInfo = this.shape.getBBox();
+                const centerX = window.pageXOffset + svgInfo.left + svgInfo.width / 2;
+                const centerY = window.pageYOffset + svgInfo.top +  svgInfo.height/ 2;
+                this.centerX = centerX;
+                this.centerY = centerY;
+                this.offSetX = svgInfo.left;
+                this.offSetY = svgInfo.top;
+                console.log(svgInfo, shapeInfo);
+           }
+           // 计算角度
+           getAngle (x, y) {
+                let theta = Math.atan2(y, x);
+                theta = 180 / Math.PI * theta;
+                if (theta < 0) { theta = 360 + theta; }
+                return theta;
+            }
+           // path路径转换为数组
+           pathToArr (d) {
+                const darr = d.split(' ');
+                const arrData = darr.map((item) => {
+                    let command = item.charAt(0);
+                    item = item.slice(1).split(',').map((point)=> {
+                        return point.length > 0 ? parseFloat(point) : '';
+                    });
+                    item.unshift(command);
+                    return item
+                });
+                console.log(arrData);
+                return arrData;
+            }
+         // 数组转换为path路径
+          arrToPath (pathArr){
+                let newD = '';
+                for (let i = 0, len = pathArr.length; i < len; ++i) {
+                    newD += pathArr[i].shift() + pathArr[i].toString();
+                }
+                return newD;
+           }
+         }
+
+        new Circle({r:100, path:'path', point:'point', svg:'svg2'});
+        new Circle({
+            r: 14.200000762939453, 
+            shape: 'path', 
+            path: 'M16.6,15.4 L30.2,15.4 L30.2,16 C30.2,23.8424434,23.8424434,30.2,16,30.2 C8.15755655,30.2,1.8,23.8424434,1.8,16 C1.8,8.15755655,8.15755655,1.8,16,1.8 L16.6,1.8 L16.6,15.4 Z',
+            point: 'point1', 
+            svg: 'svg'
+         });
+        
+
+    </script>
+</body>
+</html>
