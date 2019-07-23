@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图形编辑</title>
+    <style>
+       *{
+           margin:0;
+           padding:0;
+       }
+        #svg{
+           margin:10px;
+          
+        }
+        #svg2{
+            display:none;
+            background:#eee;
+            margin:80px;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/lodash.js/4.17.12-pre/lodash.js"></script>
+</head>
+<body>
+    <!-- <svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path id='circle1' d="M16.6,15.4 L30.2,15.4 L30.2,16 C30.2,23.8424434,23.8424434,30.2,16,30.2 C8.15755655,30.2,1.8,23.8424434,1.8,16 C1.8,8.15755655,8.15755655,1.8,16,1.8 L16.6,1.8 L16.6,15.4 Z" stroke="black" fill="green" stroke-width="2" fill-opacity="0.5"/>
+    </svg> -->
+
+    <svg id='svg' width="32.00000596046448px" height="32.00000596046448px" version="1.1" xmlns="http://www.w3.org/2000/svg" style='background:#eee'>
+        <path id='radian' d="M16.6,15.4 L30.2,15.4 L30.2,16 A14.200000762939453,14.200000762939453,0,1,1,16.6,1.8 Z" stroke="black" fill="green" stroke-width="0.8" fill-opacity="0.5"/>
+        <g class="point">
+            <circle data-index="0" id='point' cx="30.2" cy='15.4' r='0.8' fill='red' />
+            <circle data-index="1" id='point2' cx="16.6" cy='1.8' r='0.8' fill='blue' />
+            <circle data-index="3" id='point3' cx="0" cy='0' r='0.8' fill='#000' />
+        </g>
+    </svg>
+    
+    <script>
+      class Radian{
+            constructor (shape) {
+                this.shape = document.getElementById(shape.shape);
+                this.r = shape.r;
+                this.path = shape.path;
+                this.mouseMove = this.mouseMove.bind(this);
+                this.point = document.getElementsByClassName('point')[0];
+                this.pointsCoordinate = [{x: 30.2, y: 15.4},{x: 16.6, y: 1.8}]
+                this.currentEditIndex = -1;
+                this.point.addEventListener('mousedown', (e) => {
+                    this.currentEditIndex = e.target.dataset.index;
+                    this.mouseDown();
+                },true)
+                this.arrPath = _.cloneDeep(this.pathToArr(this.path));
+                
+                
+            }
+            duiCheng () {
+                
+                let {pointsCoordinate:pc, currentEditIndex: ci} = this;
+                let point3 = document.getElementById('point3');
+                let radian = document.getElementById('radian');
+                let bound = radian.getBBox();
+                let radianWidth = bound.width + bound.x *2;
+                let radianHeight = bound.height + bound.y *2;   
+                let csxx = (ci == 0) ? 1 : 0;
+                let p3x =  32.000011682510376 - pc[csxx].x;
+                let p3y =  32.000011682510376 - pc[csxx].y;
+                this.point3 = {x:p3x, y:p3y}
+                point3.setAttribute('cx',p3x);
+                point3.setAttribute('cy',p3y);
+            }
+            // 按下鼠标记录圆心的位置
+            mouseDown () {
+                console.log(this.currentEditIndex);
+                this.getShapInfo();
+                this.duiCheng();
+                document.addEventListener('mousemove', this.mouseMove, true);
+                document.addEventListener('mouseup', ()=>{
+                    document.removeEventListener('mousemove', this.mouseMove, true)
+                }, true);
+            }
+            // 移动鼠标获取鼠标的坐标及角度
+            mouseMove(e) {
+                let mouse = this.getMouseCoordinate(e);
+                let theta =  this.getAngle(mouse.x - this.centerX, mouse.y - this.centerY);
+                this.circleMoveCoordinate(this.r, Math.round(theta));
+            }
+            // 根据角度，半径，坐标计算出 对应在圆上的坐标
+            circleMoveCoordinate (r, theta) {
+                let  x   =   this.centerX   +   r   *  Math.cos(theta   *   3.14   /180   );
+                let  y   =   this.centerY   +   r   *  Math.sin(theta   *   3.14   /180   );
+                this.pointsCoordinate[this.currentEditIndex].x = x - this.offSetX;
+                this.pointsCoordinate[this.currentEditIndex].y = y - this.offSetY;
+                this.transPath(x, y, theta);
+            }
+            // 路径转换
+            transPath (x, y, theta) {
+                let {currentEditIndex: index, pointsCoordinate: pointPos, point3: p3} = this;
+                // console.log(index, pointPos);
+                this.point.children[index].setAttribute('cx', pointPos[index].x);
+                this.point.children[index].setAttribute('cy', pointPos[index].y);
+               // console.log('theta', theta);
+                
+                this.arrPath[1][1] = pointPos[0].x;
+                this.arrPath[1][2] = pointPos[0].y;
+                this.arrPath[2][1] = pointPos[0].x;
+                this.arrPath[2][2] = pointPos[0].y;
+                this.arrPath[3][6] = pointPos[1].x;
+                this.arrPath[3][7] = pointPos[1].y;
+               
+                let diffTowPoints = Math.sqrt(Math.pow((pointPos[1].x - pointPos[0].x),2) + Math.pow((pointPos[1].y - pointPos[0].y), 2));
+                
+                if ( index == 0) {
+                    if (pointPos[0].x > p3.x && pointPos[0].y < p3.y) {
+                        if (pointPos[0].y < pointPos[1].y && pointPos[0].x < pointPos[1].x) {
+                            this.arrPath[3][4] = 0;
+                        } else {
+                            this.arrPath[3][4] = 1;
+                        }
+                    }
+                    if (pointPos[0].x > p3.x && pointPos[0].y > p3.y) {
+                        if (pointPos[0].x < pointPos[1].x) {
+                            this.arrPath[3][4] = 1;
+                        } else {
+                            this.arrPath[3][4] = 0;
+                        }
+                    }
+                    if (pointPos[0].x < p3.x && pointPos[0].y > p3.y) {
+                        if (pointPos[0].x < pointPos[1].x && pointPos[0].y < pointPos[1].y) {
+                            this.arrPath[3][4] = 1; 
+                        } else {
+                            this.arrPath[3][4] = 0;
+                        } 
+                    }
+                    if (pointPos[0].x < p3.x && pointPos[0].y < p3.y) {
+                        if (pointPos[0].x > pointPos[1].x && pointPos[0].y < pointPos[1].y) {
+                            this.arrPath[3][4] = 1;
+                        } else {
+                            this.arrPath[3][4] = 0; 
+                        }
+                    }
+                   
+                } else {
+                    if (pointPos[1].x > p3.x && pointPos[1].y < p3.y) {
+                        if (pointPos[0].y < pointPos[1].y && pointPos[0].x < pointPos[1].x) {
+                            this.arrPath[3][4] = 0;
+                        } else {
+                            this.arrPath[3][4] = 1;
+                        }
+                    }
+                    if (pointPos[1].x > p3.x && pointPos[1].y > p3.y) {
+                        if (pointPos[0].x < pointPos[1].x) {
+                            this.arrPath[3][4] = 1;
+                        } else {
+                            this.arrPath[3][4] = 0;
+                        }
+                    }
+                    if (pointPos[1].x < p3.x && pointPos[1].y > p3.y) {
+                        if (pointPos[0].x < pointPos[1].x && pointPos[0].y < pointPos[1].y) {
+                            this.arrPath[3][4] = 1; 
+                        } else {
+                            this.arrPath[3][4] = 0;
+                        } 
+                    }
+                    if (pointPos[1].x < p3.x && pointPos[1].y < p3.y) {
+                        if (pointPos[0].x > pointPos[1].x && pointPos[0].y < pointPos[1].y) {
+                            this.arrPath[3][4] = 1;
+                        } else {
+                            this.arrPath[3][4] = 0; 
+                        }
+                    }
+                }
+                let path = this.arrToPath(this.arrPath);
+                this.shape.setAttribute('d', path) 
+            }
+            // 返回鼠标的坐标
+            getMouseCoordinate (e) {
+                let x = e.pageX || e.clientX +  document.documentElement.scrollLeft;
+                let y = e.pageY || e.clientY +  document.documentElement.scrollLeft;
+                return {x,y}
+            }
+            // 获取图形的基本信息
+            getShapInfo () {
+                const svgInfo  = document.getElementById('svg').getBoundingClientRect();
+                const shapeInfo = this.shape.getBBox();
+                const centerX = window.pageXOffset + svgInfo.left + svgInfo.width / 2;
+                const centerY = window.pageYOffset + svgInfo.top +  svgInfo.height/ 2;
+                this.centerX = centerX;
+                this.centerY = centerY;
+                this.offSetX = svgInfo.left;
+                this.offSetY = svgInfo.top;
+           }
+           // 计算角度
+           getAngle (x, y) {
+                let theta = Math.atan2(y, x);
+                theta = 180 / Math.PI * theta;
+                if (theta < 0) { theta = 360 + theta; }
+                return theta;
+            }
+           // path路径转换为数组
+           pathToArr (d) {
+                const darr = d.split(' ');
+                const arrData = darr.map((item) => {
+                    let command = item.charAt(0);
+                    item = item.slice(1).split(',').map((point)=> {
+                        return point.length > 0 ? parseFloat(point) : '';
+                    });
+                    item.unshift(command);
+                    return item
+                });
+                return arrData;
+            }
+         // 数组转换为path路径
+          arrToPath (pathArr){
+            return pathArr.map((item) => {
+                const [command, ...numbers] = item;
+                item =  command + numbers.toString();
+                return item;
+            }).toString();
+           }
+         }
+
+        new Radian({
+            point: 'point',
+            point2: 'point2',
+            r: 14.200000762939453,
+            shape: 'radian',
+            path: 'M16.6,15.4 L30.2,15.4 L30.2,16 A14.200000762939453,14.200000762939453,0,1,1,16.6,1.8 Z'
+        });
+        
+    </script>
+</body>
+</html>

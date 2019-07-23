@@ -71,9 +71,13 @@
     </svg>
 </div>
 <!-- 
-<h2>弧形</h2>
-
-<h2>綜合使用</h2> -->
+<h2>弧形</h2>-->
+<div>
+    <svg width="300px" height="300px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <
+    </svg>
+</div>
+<h2>綜合使用</h2> 
 <br/><br/><br/><br/>
 <div>
    <svg width="600px" height="300px" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
@@ -95,8 +99,22 @@
         <circle cx="17.4249783" cy="5.95667574" r="2" fill="blue" fill-opacity='0.6' />
     </svg>
 </div>
-
+<div>
+    <svg width="600" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <!-- <path  d="M30,30 L60 30 L60 30.1 A30 30  0 1 1 30 0Z" stroke='#000' fill='red' />
+        <path   d="M60,60 L120 60 L120 60.2 A60 60  0 1 1 60 0Z" stroke='#000' fill='red' />
+        <path id='pathss' d="M90,90 L180 90 L180 90.3 A90 90  0 1 1 90 0Z" stroke='#000' fill='red' /> -->
+        <path id='pathss' d="M16.6,15.4 L30.2,15.4 L30.2,15.4000000001               A14.200000762939453,14.200000762939453,0,1,1,16.6,1.7878236781282328 Z" fill='red'/>
+        <path id='pathss' d="M49.800000000000004,46.2 L90.6,46.2 L90.6,46.2000000003 A42.60000228881836,42.60000228881836,0,1,1,49.800000000000004,1.7878236781282328 Z" fill='blue'/>
+        <path id='pathss2' d=""/>
+    </svg>
+</div>
+<div>
+    <svg width="32.02333998680115" height="31.9512619972229" version="1.1" xmlns="http://www.w3.org/2000/svg" style="background: #eee;">
+        <path id='mypath' d="M16.6,15.4 L30.2,15.4 L30.2,15.4000000001 A14.200000762939453,14.200000762939453,0,1,1,16.6,1.7878236781282328 Z" />    
+    </svg>
+</div>
 <script>
-let h = document.getElementById('arrowpath').getBBox();
-console.log(h);
+ const lex = document.getElementById('mypath').getBBox();
+ console.log(lex);
 </script>
